@@ -30,7 +30,7 @@
 			z-index: 0;
 		}
 
-		.terminal {
+		.container {
 			position: relative;
 			z-index: 2;
 			width: 80%;
@@ -41,6 +41,33 @@
 			border: 2px solid #00ff00;
 			border-radius: 5px;
 			box-shadow: 0 0 10px #00ff00;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		input {
+			width: 80%;
+			padding: 7px;
+			background: black;
+			color: #00ff00;
+			border: 1px solid #00ff00;
+			text-align: center;
+			margin-bottom: 10px;
+		}
+
+		button {
+			background: black;
+			color: #00ff00;
+			border: 1px solid #00ff00;
+			padding: 7px 15px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background: #00ff00;
+			color: black;
 		}
 
 		.profile-pic {
@@ -76,46 +103,6 @@
 				opacity: 0;
 			}
 		}
-
-		.hidden {
-			display: none;
-		}
-
-		input {
-			width: 80%;
-			padding: 5px;
-			background: black;
-			color: #00ff00;
-			border: 1px solid #00ff00;
-			text-align: center;
-			margin-bottom: 10px;
-		}
-
-		button {
-			background: black;
-			color: #00ff00;
-			border: 1px solid #00ff00;
-			padding: 7px 15px;
-			cursor: pointer;
-		}
-
-		button:hover {
-			background: #00ff00;
-			color: black;
-		}
-
-		.package-plan {
-			text-align: left;
-			margin-top: 20px;
-			border-top: 1px solid #00ff00;
-			padding-top: 10px;
-		}
-
-		.plan {
-			margin: 5px 0;
-			padding: 5px;
-			border: 1px solid #00ff00;
-		}
 	</style>
 </head>
 
@@ -123,35 +110,36 @@
 
 	<canvas id="matrix"></canvas>
 
-	<div class="terminal">
-		<div id="username-input">
-			<h2>Enter Username:</h2>
-			<input type="text" id="username" placeholder="Username">
-			<button onclick="startHacking()">Hack</button>
-		</div>
+	<!-- Login Form -->
+	<div id="login-container" class="container">
+		<h2>Login To Access Terminal</h2>
+		<input type="password" id="email" placeholder="Enter Username">
+		<input type="password" id="password" placeholder="Enter Password">
+		<br>
+		<button onclick="login()">Login</button>
+	</div>
 
-		<div id="hacking-process" class="hidden">
-			<pre id="hacking-output">_ <span class="cursor"></span></pre>
-		</div>
+	<!-- Username Input -->
+	<div id="username-container" class="container hidden">
+		<h2>Enter Username:</h2>
+		<input type="text" id="username" placeholder="Username">
+		<button onclick="startHacking()">Let's Get Of User Account</button>
+	</div>
 
-		<div id="user-info" class="hidden">
-			<h2>User Data Retrieved!</h2>
-			<img id="profile-pic" class="profile-pic" src="https://via.placeholder.com/100?text=Anon"
-				alt="Profile Picture">
-			<p><strong>Username:</strong> <span id="display-username"></span></p>
-			<p><strong>Full Name:</strong> <span id="display-name"></span></p>
-			<p><strong>Followers:</strong> <span id="display-followers"></span></p>
-			<p><strong>Following:</strong> <span id="display-following"></span></p>
-			<p><strong>Post:</strong> <span id="display-post"></span></p>
-			<div class="package-plan">
-				<h3>Unlock More Info</h3>
-				<div class="plan">🔓 ₹10 - Unlock Follower List</div>
-				<div class="plan">🔓 ₹20 - Unlock Following List</div>
-				<div class="plan">🔓 ₹50 - Unlock Post</div>
-				<div class="plan">🔓 ₹100 - Get Full Account Access</div>
-				<div class="plan">🔓 ₹100 - Start Chat In Ghost Mode</div>
-			</div>
-		</div>
+	<!-- Hacking Process -->
+	<div id="hacking-container" class="container hidden">
+		<pre id="hacking-output">_ <span class="cursor"></span></pre>
+	</div>
+
+	<!-- User Info -->
+	<div id="user-info-container" class="container hidden">
+		<img id="profile-pic" class="profile-pic" src="https://via.placeholder.com/100?text=Anon" alt="Profile Picture">
+		<h2>User Data Retrieved!</h2>
+		<p><strong>Username:</strong> <span id="display-username"></span></p>
+		<p><strong>Full Name:</strong> <span id="display-name"></span></p>
+		<p><strong>Followers:</strong> <span id="display-followers"></span></p>
+		<p><strong>Following:</strong> <span id="display-following"></span></p>
+		<p><strong>Post:</strong> <span id="display-post"></span></p>
 	</div>
 
 	<script>
@@ -182,6 +170,24 @@
 
 		setInterval(drawMatrix, 35);
 
+		function login() {
+			const email = document.getElementById("email").value.trim();
+			const password = document.getElementById("password").value.trim();
+
+			if (!email || !password) {
+				alert("Please enter valid credentials!");
+				return;
+			}
+
+			if (email != "manish" && password != "admin") {
+				alert("Please Enter A Valid Credintials");
+				return;
+			}
+
+			document.getElementById("login-container").classList.add("hidden");
+			document.getElementById("username-container").classList.remove("hidden");
+		}
+
 		function startHacking() {
 			let username = document.getElementById("username").value.trim();
 			if (!username) {
@@ -189,8 +195,9 @@
 				return;
 			}
 
-			document.getElementById("username-input").classList.add("hidden");
-			document.getElementById("hacking-process").classList.remove("hidden");
+
+			document.getElementById("username-container").classList.add("hidden");
+			document.getElementById("hacking-container").classList.remove("hidden");
 
 			let output = document.getElementById("hacking-output");
 			output.innerHTML = "_ <span class='cursor'></span>";
@@ -218,8 +225,8 @@
 		}
 
 		async function fetchUserData(username) {
-			document.getElementById("hacking-process").classList.add("hidden");
-			document.getElementById("user-info").classList.remove("hidden");
+			document.getElementById("hacking-container").classList.add("hidden");
+			document.getElementById("user-info-container").classList.remove("hidden");
 
 			const url = "https://i.theasmn.com/api/user";
 			const data = { username };
@@ -250,11 +257,6 @@
 				console.error("Error:", error);
 			}
 		}
-
-		window.addEventListener("resize", () => {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
-		});
 	</script>
 
 </body>
